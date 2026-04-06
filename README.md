@@ -36,7 +36,7 @@
 
  `docker network create pg-network`
 
-2. Запускаем контейнера в папках 
+2. Запускаем контейнера в папках task2/master и task2/slave
 
  `docker compose up -d  `
 
@@ -46,19 +46,19 @@
 
 ![logs1](img/img1.png)
 
-4. Создаём базу 
+4. Создаём ёщё базу и таблицу на мастере
 
 `docker exec -it psql_netology-master psql -U postgres -c "CREATE DATABASE my_db;"`
 
 `docker exec -it psql_netology-master psql -U postgres -d my_db -c "CREATE TABLE t1 (id INT);"`
 
-на slave
+проверяем на slave
 
 `docker exec -it psql_netology-slave psql -U postgres -c "SELECT status,last_msg_send_time,latest_end_time,sender_host,sender_port   FROM pg_stat_wal_receiver;"`
 
 ![slave](img/img2.png)
 
-на master
+проверяем на master
 
 `docker exec -it psql_netology-master psql -U postgres -c "SELECT * FROM pg_stat_replication;"`
 
@@ -82,6 +82,34 @@
 ### Решение 3
 
 ---
+1. Создаём сеть для контейнеров
 
+ `docker network create mysql-network`
+
+2. На Windows для файлов master-*.cnf должны быть права только для чтения, в Linux 644
+3. Запускаем контейнера в папках task3/master-1 и task2/master-2
+
+ `docker compose up -d  `  
+
+4. Проверяем работу
+
+`docker exec -it mysql_netology-master-1 mysql -u root -p12345 -e "SHOW REPLICA STATUS\G" `
+
+![master-1](img/img4.png)
+
+`docker exec -it mysql_netology-master-2 mysql -u root -p12345 -e "SHOW REPLICA STATUS\G" `
+
+![master-2](img/img5.png)
+
+
+Создание БД на master-2
+`docker exec -it mysql_netology-master-2 mysql -u root -p12345 -e "CREATE database test_db; SHOW databases;" `
+
+![master-2](img/img6.png)
+
+Проверка репликации на master-1
+`docker exec -it mysql_netology-master-1 mysql -u root -p12345 -e "SHOW databases;"`
+
+![master-2](img/img7.png)
 
 ---
