@@ -1,0 +1,25 @@
+services:
+
+  master_db:
+    image: postgres:18
+    container_name: psql_netology-master
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: test_db
+      PGDATA: /var/lib/postgresql/data
+    ports:
+    - "5435:5432"
+    volumes:
+    - ./master-init.sh:/docker-entrypoint-initdb.d/master-init.sh
+    - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pg-network
+
+volumes:
+  postgres_data:
+
+networks:
+  pg-network:
+    external: true
