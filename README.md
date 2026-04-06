@@ -32,6 +32,37 @@
 ### Решение 2
 
 ---
+1. Создаём сеть для контейнеров
+
+ `docker network create pg-network`
+
+2. Запускаем контейнера в папках 
+
+ `docker compose up -d  `
+
+3. Проверяем на slave
+
+`docker compose logs`
+
+![logs1](img/img1.png)
+
+4. Создаём базу 
+
+`docker exec -it psql_netology-master psql -U postgres -c "CREATE DATABASE my_db;"`
+
+`docker exec -it psql_netology-master psql -U postgres -d my_db -c "CREATE TABLE t1 (id INT);"`
+
+на slave
+
+`docker exec -it psql_netology-slave psql -U postgres -c "SELECT status,last_msg_send_time,latest_end_time,sender_host,sender_port   FROM pg_stat_wal_receiver;"`
+
+![slave](img/img2.png)
+
+на master
+
+`docker exec -it psql_netology-master psql -U postgres -c "SELECT * FROM pg_stat_replication;"`
+
+![master](img/img3.png)
 
 ---
 
@@ -51,5 +82,6 @@
 ### Решение 3
 
 ---
+
 
 ---
